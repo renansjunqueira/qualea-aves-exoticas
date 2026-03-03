@@ -1,5 +1,5 @@
 'use server'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 interface PairPayload {
   male_id:       string
@@ -10,7 +10,7 @@ interface PairPayload {
 }
 
 export async function savePair(payload: PairPayload, id?: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   const data = {
     male_id:       payload.male_id,
     female_id:     payload.female_id,

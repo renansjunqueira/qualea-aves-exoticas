@@ -22,7 +22,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR" className={inter.variable}>
-      <body className="font-sans antialiased bg-surface min-h-screen">
+      <body className="font-sans antialiased bg-surface min-h-screen" suppressHydrationWarning>
         <Sidebar />
         {/* Conteúdo principal com offset da sidebar */}
         <div className="lg:pl-60 min-h-screen flex flex-col">

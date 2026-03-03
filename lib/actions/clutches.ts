@@ -1,5 +1,5 @@
 'use server'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import type { ClutchStatus } from '@/types'
 
 interface ClutchPayload {
@@ -13,7 +13,7 @@ interface ClutchPayload {
 }
 
 export async function saveClutch(payload: ClutchPayload, id?: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   const data = {
     pair_id:        payload.pair_id,
     first_egg_date: payload.first_egg_date || null,
