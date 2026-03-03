@@ -25,8 +25,10 @@ export async function middleware(request: NextRequest) {
   // Atualiza o token de sessão (refresh silencioso)
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Redireciona para /login se não autenticado
-  if (!user && !request.nextUrl.pathname.startsWith('/login')) {
+  // Redireciona para /login se não autenticado (exceto /login e /signup)
+  const isAuthRoute = request.nextUrl.pathname.startsWith('/login') ||
+                      request.nextUrl.pathname.startsWith('/signup')
+  if (!user && !isAuthRoute) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
