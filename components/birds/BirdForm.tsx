@@ -11,7 +11,6 @@ import { Badge }    from '@/components/ui/badge'
 import { cn }       from '@/lib/utils'
 import { Camera, X, ChevronLeft, Save, AlertCircle } from 'lucide-react'
 import { saveBird } from '@/lib/actions/birds'
-import { createClient } from '@/lib/supabase/client'
 
 interface Props {
   bird?:    Bird | null
@@ -107,16 +106,15 @@ export function BirdForm({ bird, species, allBirds }: Props) {
       // Upload de foto: só faz upload se o usuário selecionou um arquivo novo
       let photoUrl: string | null = bird?.photo_url ?? null
       if (photoFileRef.current) {
-        const file = photoFileRef.current
-        const ext  = file.name.split('.').pop()
-        const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
-        const supabase = createClient()
-        const { error: uploadError } = await supabase.storage
-          .from('bird-photos')
-          .upload(path, file, { upsert: true })
-        if (uploadError) throw new Error(`Erro no upload: ${uploadError.message}`)
-        const { data: urlData } = supabase.storage.from('bird-photos').getPublicUrl(path)
-        photoUrl = urlData.publicUrl
+        const fd = new FormData()
+        fd.append('file', photoFileRef.current)
+        const res = await fetch('/api/upload-photo', { method: 'POST', body: fd })
+        if (!res.ok) {
+          const { error } = await res.json()
+          throw new Error(`Erro no upload: ${error}`)
+        }
+        const { url } = await res.json()
+        photoUrl = url
       } else if (photoPreview === null) {
         photoUrl = null  // usuário removeu a foto
       }
