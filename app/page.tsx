@@ -1,65 +1,151 @@
-import Image from "next/image";
+import { Header }            from '@/components/layout/Header'
+import { StatCard }           from '@/components/dashboard/StatCard'
+import { SpeciesChart }       from '@/components/dashboard/SpeciesChart'
+import { RecentBirdsTable }   from '@/components/dashboard/RecentBirdsTable'
+import { ActiveClutchCard }   from '@/components/dashboard/ActiveClutchCard'
+import { Card, CardHeader, CardTitle, CardBody } from '@/components/ui/card'
+import { Button }             from '@/components/ui/button'
+import { getBirds }          from '@/lib/queries/birds'
+import { getPairs }          from '@/lib/queries/pairs'
+import { getClutches }       from '@/lib/queries/clutches'
+import { getSpecies }        from '@/lib/queries/species'
+import { Bird, Heart, Egg, BookOpen, Plus, ArrowRight } from 'lucide-react'
+import Link from 'next/link'
 
-export default function Home() {
+export const metadata = { title: 'Dashboard' }
+
+async function getDashboardData() {
+  const [birds, pairs, clutches, speciesList] = await Promise.all([
+    getBirds(), getPairs(), getClutches(), getSpecies(),
+  ])
+
+  const speciesCount = speciesList.map(sp => ({
+    name:  sp.common_name,
+    emoji: sp.emoji,
+    count: birds.filter(b => b.species_id === sp.id).length,
+  })).sort((a, b) => b.count - a.count)
+
+  return {
+    stats: {
+      totalBirds:     birds.length,
+      activePairs:    pairs.filter(p => p.active).length,
+      activeClutches: clutches.filter(c => c.status === 'incubating' || c.status === 'weaning').length,
+      chicksSeason:   clutches.reduce((s, c) => s + c.hatched, 0),
+      speciesCount:   speciesList.length,
+    },
+    birds:    birds.slice(0, 6),
+    clutches: clutches.filter(c => c.status === 'incubating' || c.status === 'weaning').slice(0, 5),
+    species:  speciesCount,
+  }
+}
+
+export default async function DashboardPage() {
+  const { stats, birds, clutches, species } = await getDashboardData()
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="flex flex-col flex-1">
+      <Header
+        title="Dashboard"
+        actions={
+          <Link href="/birds/new">
+            <Button size="sm">
+              <Plus size={15} />
+              Nova Ave
+            </Button>
+          </Link>
+        }
+      />
+
+      <main className="flex-1 p-4 lg:p-6 space-y-6 animate-fade-in">
+
+        {/* Boas-vindas */}
+        <div className="flex items-center gap-3 p-4 rounded-[var(--radius-lg)] border border-primary-200"
+          style={{ background: 'linear-gradient(135deg, #f0faf4 0%, #d9f2e4 100%)' }}>
+          <div className="text-3xl">🦜</div>
+          <div>
+            <h2 className="font-bold text-primary-900 text-base">Bem-vindo, Helinho!</h2>
+            <p className="text-sm text-primary-700">
+              Seu plantel tem <strong>{stats.totalBirds} aves</strong> e{' '}
+              <strong>{stats.activeClutches} ninhadas</strong> ativas hoje.
+            </p>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+          <StatCard
+            title="Aves no Plantel"
+            value={stats.totalBirds}
+            icon={Bird}
+            trend="+3 este mês"
+            trendUp
+            color="green"
+          />
+          <StatCard
+            title="Casais Formados"
+            value={stats.activePairs}
+            icon={Heart}
+            color="purple"
+          />
+          <StatCard
+            title="Ninhadas Ativas"
+            value={stats.activeClutches}
+            icon={Egg}
+            color="amber"
+          />
+          <StatCard
+            title="Filhotes na Temporada"
+            value={stats.chicksSeason}
+            icon={Bird}
+            trend="+5 vs ano ant."
+            trendUp
+            color="blue"
+          />
         </div>
+
+        {/* Middle row */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {/* Ninhadas ativas */}
+          <Card className="lg:col-span-2">
+            <CardHeader>
+              <CardTitle>Ninhadas Ativas</CardTitle>
+              <Link href="/clutches" className="text-xs text-primary-600 hover:underline flex items-center gap-1 font-medium">
+                Ver todas <ArrowRight size={12} />
+              </Link>
+            </CardHeader>
+            <CardBody>
+              <ActiveClutchCard clutches={clutches} />
+            </CardBody>
+          </Card>
+
+          {/* Espécies */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Aves por Espécie</CardTitle>
+              <Link href="/species" className="text-xs text-primary-600 hover:underline flex items-center gap-1 font-medium">
+                <BookOpen size={12} /> Gerenciar
+              </Link>
+            </CardHeader>
+            <CardBody>
+              <SpeciesChart data={species} />
+            </CardBody>
+          </Card>
+        </div>
+
+        {/* Plantel recente */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Últimas Aves Cadastradas</CardTitle>
+            <Link href="/birds" className="text-xs text-primary-600 hover:underline flex items-center gap-1 font-medium">
+              Ver plantel completo <ArrowRight size={12} />
+            </Link>
+          </CardHeader>
+          <CardBody className="p-0 pb-1">
+            <RecentBirdsTable birds={birds} />
+          </CardBody>
+        </Card>
+
       </main>
     </div>
-  );
+  )
 }
