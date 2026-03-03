@@ -2,30 +2,30 @@
 
 /* ── Custom Design Tokens (Tailwind v4) ──────────── */
 @theme {
-  /* Brand — extraídas do logo Qualea */
-  --color-primary-50:   #f0faf4;
-  --color-primary-100:  #d9f2e4;
-  --color-primary-200:  #b2e4c9;
-  --color-primary-300:  #7dcda8;
-  --color-primary-400:  #4aae82;
-  --color-primary-500:  #2d9165;
-  --color-primary-600:  #21754f;
-  --color-primary-700:  #1c5e40;   /* sidebar bg */
-  --color-primary-800:  #184d35;
-  --color-primary-900:  #153f2c;   /* sidebar header bg */
-  --color-primary-950:  #0b2419;
+  /* Brand — Ringneck Opalino Cleartail */
+  --color-primary-50:   #edfbfd;   /* fundo levíssimo */
+  --color-primary-100:  #cdf3f8;   /* tint turquesa claro */
+  --color-primary-200:  #9de8f2;   /* turquesa suave */
+  --color-primary-300:  #62d5e8;   /* turquesa médio */
+  --color-primary-400:  #48C0D8;   /* corpo da ave — cor primária */
+  --color-primary-500:  #2aa4be;   /* turquesa profundo */
+  --color-primary-600:  #2087a0;   /* azul-teal */
+  --color-primary-700:  #1e6880;   /* teal escuro */
+  --color-primary-800:  #1D2D44;   /* azul-navy — sidebar bg */
+  --color-primary-900:  #152235;   /* navy profundo — sidebar header */
+  --color-primary-950:  #0d1520;   /* mais escuro */
 
-  /* Accent — laranja do pôr do sol no logo */
-  --color-accent-400:   #f9b274;
-  --color-accent-500:   #f4a261;
-  --color-accent-600:   #e07830;
+  /* Accent — vermelho do bico da ave */
+  --color-accent-400:   #ef6a74;
+  --color-accent-500:   #E63946;
+  --color-accent-600:   #c42b38;
 
-  /* Neutros */
-  --color-surface:      #f8faf9;
+  /* Neutros — baseados no azul acinzentado das asas (#ADC1D6) */
+  --color-surface:      #f4f8fb;
   --color-card:         #ffffff;
-  --color-border:       #dceee4;
-  --color-muted:        #6b8f7a;
-  --color-muted-light:  #a8c4b2;
+  --color-border:       #c8d9e6;
+  --color-muted:        #7a96b0;
+  --color-muted-light:  #ADC1D6;
 
   /* Danger */
   --color-danger-100:   #fee2e2;
@@ -50,7 +50,7 @@ html { -webkit-font-smoothing: antialiased; }
 
 body {
   background-color: var(--color-surface);
-  color: #1b2e22;
+  color: #1D2D44;
   font-family: var(--font-sans);
 }
 
@@ -69,7 +69,7 @@ body {
   border-radius: var(--radius-md);
   font-size: 14px;
   font-weight: 500;
-  color: #a8d5bc;
+  color: #8db5cc;
   transition: background 0.15s, color 0.15s;
   text-decoration: none;
   cursor: pointer;
@@ -77,9 +77,9 @@ body {
 }
 .nav-link:hover { background: rgba(255,255,255,0.08); color: #ffffff; }
 .nav-link.active {
-  background: rgba(255,255,255,0.14);
+  background: rgba(72,192,216,0.15);
   color: #ffffff;
-  box-shadow: inset 3px 0 0 #74c69d;
+  box-shadow: inset 3px 0 0 #48C0D8;
 }
 
 /* ── Bottom nav (mobile) ─────────────────────────── */

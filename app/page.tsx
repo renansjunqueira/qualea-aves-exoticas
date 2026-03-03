@@ -67,7 +67,7 @@ export default async function DashboardPage() {
 
         {/* Boas-vindas */}
         <div className="flex items-center gap-3 p-4 rounded-[var(--radius-lg)] border border-primary-200"
-          style={{ background: 'linear-gradient(135deg, #f0faf4 0%, #d9f2e4 100%)' }}>
+          style={{ background: 'linear-gradient(135deg, #edfbfd 0%, #cdf3f8 100%)' }}>
           <div className="text-3xl">🦜</div>
           <div>
             <h2 className="font-bold text-primary-900 text-base">Bem-vindo, {firstName}!</h2>
