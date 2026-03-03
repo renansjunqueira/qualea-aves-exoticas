@@ -27,15 +27,15 @@ export function Sidebar({ userEmail, isAdmin }: Props) {
   return (
     <aside className="hidden lg:flex flex-col fixed inset-y-0 left-0 w-60 z-40" style={{ background: 'var(--color-primary-800)' }}>
       {/* Logo */}
-      <div className="flex items-center gap-3 px-4 py-4" style={{ background: 'var(--color-primary-900)' }}>
-        <div className="relative w-14 h-14 flex-shrink-0">
-          <Image src="/logo-misto.png" alt="Qualea Tech" fill className="object-contain mix-blend-multiply" />
+      <div className="flex items-center gap-3 px-4 py-3 bg-white border-b" style={{ borderColor: 'rgba(29,45,68,0.08)' }}>
+        <div className="relative w-12 h-12 flex-shrink-0">
+          <Image src="/logo-misto3.png" alt="Qualea Tech" fill className="object-contain" />
         </div>
         <span
-          className="text-white font-semibold tracking-tight leading-none"
-          style={{ fontSize: '18px', fontFamily: 'var(--font-inter), Inter, sans-serif', letterSpacing: '-0.02em' }}
+          className="font-semibold tracking-tight leading-none"
+          style={{ fontSize: '17px', color: '#1D2D44', letterSpacing: '-0.02em' }}
         >
-          Qualea<span style={{ color: 'var(--color-primary-300)' }}> Tech</span>
+          Qualea<span style={{ color: 'var(--color-primary-500)' }}> Tech</span>
         </span>
       </div>
 
