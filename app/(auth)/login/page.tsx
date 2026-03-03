@@ -30,10 +30,10 @@ export default function LoginPage() {
       {/* Logo */}
       <div className="flex flex-col items-center gap-3 mb-8">
         <div className="relative w-16 h-16 rounded-full overflow-hidden border-4 border-primary-200">
-          <Image src="/logo.jpg" alt="Qualea" fill className="object-cover" />
+          <Image src="/logo-removebg-preview.png" alt="Qualea Tech" fill className="object-contain" />
         </div>
         <div className="text-center">
-          <h1 className="text-xl font-bold text-gray-900">Qualea Aves Exóticas</h1>
+          <h1 className="text-xl font-bold text-gray-900">Qualea Tech</h1>
           <p className="text-sm text-muted">Acesse sua conta</p>
         </div>
       </div>

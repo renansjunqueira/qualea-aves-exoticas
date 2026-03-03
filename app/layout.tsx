@@ -9,10 +9,10 @@ import { getProfile }   from '@/lib/queries/users'
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
 export const metadata: Metadata = {
-  title: { default: 'Qualea Aves Exóticas', template: '%s · Qualea' },
-  description: 'Sistema de gestão de plantel de psitacídeos — Qualea Aves Exóticas · Guará/SP',
+  title: { default: 'Qualea Tech', template: '%s · Qualea Tech' },
+  description: 'Sistema de gestão de plantel de psitacídeos — Qualea Tech',
   manifest: '/manifest.json',
-  icons: { icon: '/logo.jpg' },
+  icons: { icon: '/logo-removebg-preview.png' },
 }
 
 export const viewport: Viewport = {
