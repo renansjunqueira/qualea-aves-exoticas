@@ -4,6 +4,7 @@ import './globals.css'
 import { Sidebar }   from '@/components/layout/Sidebar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { createClient } from '@/lib/supabase/server'
+import { getProfile }   from '@/lib/queries/users'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
@@ -24,10 +25,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
+  const profile  = user ? await getProfile(user.id) : null
+  const isAdmin  = profile?.role === 'admin'
+
   return (
     <html lang="pt-BR" className={inter.variable}>
       <body className="font-sans antialiased bg-surface min-h-screen" suppressHydrationWarning>
-        <Sidebar userEmail={user?.email} />
+        <Sidebar userEmail={user?.email} isAdmin={isAdmin} />
         {/* Conteúdo principal com offset da sidebar */}
         <div className="lg:pl-60 min-h-screen flex flex-col">
           {children}

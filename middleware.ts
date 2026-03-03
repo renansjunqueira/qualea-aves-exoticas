@@ -2,7 +2,13 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
+// Rotas acessíveis sem autenticação
+const PUBLIC_ROUTES = ['/login', '/signup']
+// Rotas acessíveis para qualquer usuário autenticado (independente do status)
+const STATUS_ROUTES = ['/pending', '/suspended']
+
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
   let response = NextResponse.next({ request })
 
   const supabase = createServerClient(
@@ -22,14 +28,41 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // Atualiza o token de sessão (refresh silencioso)
+  // 1. Verificar autenticação
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Redireciona para /login se não autenticado (exceto /login e /signup)
-  const isAuthRoute = request.nextUrl.pathname.startsWith('/login') ||
-                      request.nextUrl.pathname.startsWith('/signup')
-  if (!user && !isAuthRoute) {
+  if (!user) {
+    if (PUBLIC_ROUTES.some(r => pathname.startsWith(r))) return response
     return NextResponse.redirect(new URL('/login', request.url))
+  }
+
+  // Usuário autenticado tentando acessar rota pública → home
+  if (PUBLIC_ROUTES.some(r => pathname.startsWith(r))) {
+    return NextResponse.redirect(new URL('/', request.url))
+  }
+
+  // 2. Verificar status do perfil (RLS "read own" permite ao anon key)
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role, status')
+    .eq('id', user.id)
+    .single()
+
+  const status = profile?.status
+  const role   = profile?.role
+
+  // Em /pending ou /suspended — não bloquear, mas redirecionar se já está ativo
+  if (STATUS_ROUTES.some(r => pathname.startsWith(r))) {
+    if (status === 'active') return NextResponse.redirect(new URL('/', request.url))
+    return response
+  }
+
+  if (status === 'pending')   return NextResponse.redirect(new URL('/pending',   request.url))
+  if (status === 'suspended') return NextResponse.redirect(new URL('/suspended', request.url))
+
+  // 3. Rotas /admin → apenas admins
+  if (pathname.startsWith('/admin') && role !== 'admin') {
+    return NextResponse.redirect(new URL('/', request.url))
   }
 
   return response

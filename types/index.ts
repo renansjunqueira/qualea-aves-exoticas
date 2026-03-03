@@ -1,3 +1,15 @@
+// ── Perfis de usuário ─────────────────────────────────────
+export type ProfileRole   = 'admin' | 'user'
+export type ProfileStatus = 'pending' | 'active' | 'suspended'
+
+export interface Profile {
+  id:         string
+  email:      string
+  role:       ProfileRole
+  status:     ProfileStatus
+  created_at: string
+}
+
 // ── Espécies ──────────────────────────────────────────────
 export interface Species {
   id: string

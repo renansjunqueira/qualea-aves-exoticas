@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import {
-  LayoutDashboard, Bird, Heart, Egg, BookOpen, Settings, LogOut,
+  LayoutDashboard, Bird, Heart, Egg, BookOpen, Settings, LogOut, Users,
 } from 'lucide-react'
 import { signOut } from '@/lib/actions/auth'
 
@@ -18,9 +18,10 @@ const NAV = [
 
 interface Props {
   userEmail?: string
+  isAdmin?:   boolean
 }
 
-export function Sidebar({ userEmail }: Props) {
+export function Sidebar({ userEmail, isAdmin }: Props) {
   const pathname = usePathname()
 
   return (
@@ -52,6 +53,22 @@ export function Sidebar({ userEmail }: Props) {
             </Link>
           )
         })}
+
+        {/* Links de administração (apenas para admins) */}
+        {isAdmin && (
+          <>
+            <p className="text-[10px] font-semibold uppercase tracking-widest px-3 pb-2 pt-4" style={{ color: 'var(--color-primary-400)' }}>
+              Administração
+            </p>
+            <Link
+              href="/admin/users"
+              className={cn('nav-link', pathname.startsWith('/admin/users') && 'active')}
+            >
+              <Users size={17} strokeWidth={pathname.startsWith('/admin/users') ? 2.2 : 1.8} />
+              Usuários
+            </Link>
+          </>
+        )}
       </nav>
 
       {/* Footer */}
