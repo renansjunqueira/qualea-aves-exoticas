@@ -1,7 +1,6 @@
 'use client'
 import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
 import type { Bird, Species } from '@/types'
 import { Button }   from '@/components/ui/button'
 import { Input }    from '@/components/ui/input'
@@ -12,6 +11,7 @@ import { Badge }    from '@/components/ui/badge'
 import { cn }       from '@/lib/utils'
 import { Camera, X, ChevronLeft, Save, AlertCircle } from 'lucide-react'
 import { saveBird } from '@/lib/actions/birds'
+import { createClient } from '@/lib/supabase/client'
 
 interface Props {
   bird?:    Bird | null
@@ -69,6 +69,7 @@ export function BirdForm({ bird, species, allBirds }: Props) {
   })
 
   const [photoPreview, setPhotoPreview] = useState<string | null>(bird?.photo_url ?? null)
+  const photoFileRef = useRef<File | null>(null)   // arquivo real para upload
   const [errors, setErrors]   = useState<Partial<Record<keyof typeof form, string>>>({})
   const [loading, setLoading] = useState(false)
 
@@ -80,6 +81,7 @@ export function BirdForm({ bird, species, allBirds }: Props) {
   function handlePhoto(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
+    photoFileRef.current = file
     const reader = new FileReader()
     reader.onload = ev => setPhotoPreview(ev.target?.result as string)
     reader.readAsDataURL(file)
@@ -102,6 +104,23 @@ export function BirdForm({ bird, species, allBirds }: Props) {
     if (!validate()) return
     setLoading(true)
     try {
+      // Upload de foto: só faz upload se o usuário selecionou um arquivo novo
+      let photoUrl: string | null = bird?.photo_url ?? null
+      if (photoFileRef.current) {
+        const file = photoFileRef.current
+        const ext  = file.name.split('.').pop()
+        const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+        const supabase = createClient()
+        const { error: uploadError } = await supabase.storage
+          .from('bird-photos')
+          .upload(path, file, { upsert: true })
+        if (uploadError) throw new Error(`Erro no upload: ${uploadError.message}`)
+        const { data: urlData } = supabase.storage.from('bird-photos').getPublicUrl(path)
+        photoUrl = urlData.publicUrl
+      } else if (photoPreview === null) {
+        photoUrl = null  // usuário removeu a foto
+      }
+
       await saveBird(
         {
           ring_number: form.ring_number,
@@ -113,7 +132,7 @@ export function BirdForm({ bird, species, allBirds }: Props) {
           father_id:   form.father_id  || undefined,
           mother_id:   form.mother_id  || undefined,
           notes:       form.notes      || undefined,
-          photo_url:   photoPreview,
+          photo_url:   photoUrl,
         },
         bird?.id,
       )
@@ -141,7 +160,8 @@ export function BirdForm({ bird, species, allBirds }: Props) {
           className="relative w-20 h-20 rounded-full bg-primary-100 border-2 border-dashed border-primary-300 flex items-center justify-center cursor-pointer hover:bg-primary-200 transition-colors overflow-hidden flex-shrink-0"
         >
           {photoPreview ? (
-            <Image src={photoPreview} alt="Preview" fill className="object-cover" />
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
           ) : (
             <div className="flex flex-col items-center gap-1 text-muted">
               <Camera size={20} />
@@ -156,7 +176,7 @@ export function BirdForm({ bird, species, allBirds }: Props) {
           </button>
           <p className="text-xs">JPG ou PNG, até 5 MB</p>
           {photoPreview && (
-            <button type="button" onClick={() => { setPhotoPreview(null); if (fileRef.current) fileRef.current.value = '' }}
+            <button type="button" onClick={() => { setPhotoPreview(null); photoFileRef.current = null; if (fileRef.current) fileRef.current.value = '' }}
               className="flex items-center gap-1 text-xs text-red-500 hover:underline">
               <X size={11} /> Remover foto
             </button>

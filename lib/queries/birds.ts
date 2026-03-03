@@ -4,12 +4,12 @@ import type { Bird } from '@/types'
 // Listagem: sem self-join (evita ambiguidade de FK no PostgREST)
 const BIRD_LIST_SELECT = `*, species:species_id (*)`
 
-// Detalhe: inclui pai/mãe com hint explícito de FK para disambiguar
+// Detalhe: inclui pai/mãe com hint pela coluna FK (mais portável que nome de constraint)
 const BIRD_DETAIL_SELECT = `
   *,
   species:species_id (*),
-  father:birds!birds_father_id_fkey (id, ring_number, species:species_id(common_name, emoji)),
-  mother:birds!birds_mother_id_fkey (id, ring_number, species:species_id(common_name, emoji))
+  father:birds!father_id (id, ring_number, species:species_id(common_name, emoji)),
+  mother:birds!mother_id (id, ring_number, species:species_id(common_name, emoji))
 `
 
 export async function getBirds(): Promise<Bird[]> {
