@@ -9,6 +9,8 @@ import { getBirds }          from '@/lib/queries/birds'
 import { getPairs }          from '@/lib/queries/pairs'
 import { getClutches }       from '@/lib/queries/clutches'
 import { getSpecies }        from '@/lib/queries/species'
+import { getProfile }        from '@/lib/queries/users'
+import { createClient }      from '@/lib/supabase/server'
 import { Bird, Heart, Egg, BookOpen, Plus, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 
@@ -40,6 +42,11 @@ async function getDashboardData() {
 }
 
 export default async function DashboardPage() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  const profile = user ? await getProfile(user.id) : null
+  const firstName = profile?.name?.split(' ')[0] ?? 'usuário'
+
   const { stats, birds, clutches, species } = await getDashboardData()
 
   return (
@@ -63,7 +70,7 @@ export default async function DashboardPage() {
           style={{ background: 'linear-gradient(135deg, #f0faf4 0%, #d9f2e4 100%)' }}>
           <div className="text-3xl">🦜</div>
           <div>
-            <h2 className="font-bold text-primary-900 text-base">Bem-vindo, Helinho!</h2>
+            <h2 className="font-bold text-primary-900 text-base">Bem-vindo, {firstName}!</h2>
             <p className="text-sm text-primary-700">
               Seu plantel tem <strong>{stats.totalBirds} aves</strong> e{' '}
               <strong>{stats.activeClutches} ninhadas</strong> ativas hoje.

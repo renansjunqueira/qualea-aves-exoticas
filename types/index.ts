@@ -8,6 +8,14 @@ export interface Profile {
   role:       ProfileRole
   status:     ProfileStatus
   created_at: string
+  // Dados pessoais
+  name?:      string | null
+  cpf?:       string | null
+  phone?:     string | null
+  address?:   string | null
+  city?:      string | null
+  state?:     string | null
+  how_found?: string | null
 }
 
 // ── Espécies ──────────────────────────────────────────────
