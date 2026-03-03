@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 // Rotas acessíveis sem autenticação
-const PUBLIC_ROUTES = ['/login', '/signup']
+const PUBLIC_ROUTES = ['/login', '/signup', '/auth/callback']
 // Rotas acessíveis para qualquer usuário autenticado (independente do status)
 const STATUS_ROUTES = ['/pending', '/suspended']
 
