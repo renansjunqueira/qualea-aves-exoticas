@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   title: { default: 'Qualea Tech', template: '%s · Qualea Tech' },
   description: 'Sistema de gestão de plantel de psitacídeos — Qualea Tech',
   manifest: '/manifest.json',
-  icons: { icon: '/logo-misto.png' },
+  icons: { icon: '/logo-final.svg' },
 }
 
 export const viewport: Viewport = {
