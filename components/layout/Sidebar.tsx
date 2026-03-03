@@ -28,7 +28,7 @@ export function Sidebar({ userEmail, isAdmin }: Props) {
     <aside className="hidden lg:flex flex-col fixed inset-y-0 left-0 w-60 z-40" style={{ background: 'var(--color-primary-800)' }}>
       {/* Logo */}
       <div className="flex items-center gap-3 px-4 py-4" style={{ background: 'var(--color-primary-900)' }}>
-        <div className="relative w-14 h-14 flex-shrink-0">
+        <div className="relative w-28 h-28 flex-shrink-0">
           <Image src="/logo-final.svg" alt="Qualea Tech" fill className="object-contain" />
         </div>
         <span

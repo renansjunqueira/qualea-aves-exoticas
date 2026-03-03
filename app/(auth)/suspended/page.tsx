@@ -9,7 +9,7 @@ export default function SuspendedPage() {
   return (
     <div className="w-full max-w-sm text-center">
       <div className="flex flex-col items-center gap-4 mb-6">
-        <div className="relative w-16 h-16 rounded-full overflow-hidden border-4 border-primary-200">
+        <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-primary-200">
           <Image src="/logo-final.svg" alt="Qualea Tech" fill className="object-contain" />
         </div>
         <div className="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center">

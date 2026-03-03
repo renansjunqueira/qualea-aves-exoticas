@@ -54,7 +54,7 @@ export default function SignupPage() {
     <div className="w-full max-w-lg">
       {/* Logo */}
       <div className="flex flex-col items-center gap-3 mb-6">
-        <div className="relative w-14 h-14 rounded-full overflow-hidden border-4 border-primary-200">
+        <div className="relative w-28 h-28 rounded-full overflow-hidden border-4 border-primary-200">
           <Image src="/logo-final.svg" alt="Qualea Tech" fill className="object-contain" />
         </div>
         <div className="text-center">
