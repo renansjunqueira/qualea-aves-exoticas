@@ -16,7 +16,7 @@ export async function getClutches(): Promise<Clutch[]> {
     .from('clutches')
     .select(CLUTCH_SELECT)
     .order('created_at', { ascending: false })
-  if (error) { console.error('getClutches:', error); return [] }
+  if (error) { console.error('getClutches:', error.message, error.code); return [] }
   return data as Clutch[]
 }
 
@@ -27,7 +27,7 @@ export async function getClutchById(id: string): Promise<Clutch | null> {
     .select(CLUTCH_SELECT)
     .eq('id', id)
     .single()
-  if (error) { console.error('getClutchById:', error); return null }
+  if (error) { console.error('getClutchById:', error.message, error.code); return null }
   return data as Clutch
 }
 
@@ -38,7 +38,7 @@ export async function getClutchesByPair(pairId: string): Promise<Clutch[]> {
     .select(CLUTCH_SELECT)
     .eq('pair_id', pairId)
     .order('first_egg_date', { ascending: false })
-  if (error) { console.error('getClutchesByPair:', error); return [] }
+  if (error) { console.error('getClutchesByPair:', error.message, error.code); return [] }
   return data as Clutch[]
 }
 

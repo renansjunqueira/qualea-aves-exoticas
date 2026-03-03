@@ -14,7 +14,7 @@ export async function getPairs(): Promise<Pair[]> {
     .select(PAIR_SELECT)
     .eq('active', true)
     .order('created_at', { ascending: false })
-  if (error) { console.error('getPairs:', error); return [] }
+  if (error) { console.error('getPairs:', error.message, error.code); return [] }
   return data as Pair[]
 }
 
@@ -25,7 +25,7 @@ export async function getPairById(id: string): Promise<Pair | null> {
     .select(PAIR_SELECT)
     .eq('id', id)
     .single()
-  if (error) { console.error('getPairById:', error); return null }
+  if (error) { console.error('getPairById:', error.message, error.code); return null }
   return data as Pair
 }
 

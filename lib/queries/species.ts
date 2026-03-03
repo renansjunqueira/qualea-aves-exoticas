@@ -7,6 +7,6 @@ export async function getSpecies(): Promise<Species[]> {
     .from('species')
     .select('*')
     .order('common_name')
-  if (error) { console.error('getSpecies:', error); return [] }
+  if (error) { console.error('getSpecies:', error.message, error.code); return [] }
   return data as Species[]
 }
