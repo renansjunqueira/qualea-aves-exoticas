@@ -14,9 +14,12 @@ const BIRD_DETAIL_SELECT = `
 
 export async function getBirds(): Promise<Bird[]> {
   const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return []
   const { data, error } = await supabase
     .from('birds')
     .select(BIRD_LIST_SELECT)
+    .eq('user_id', user.id)
     .order('created_at', { ascending: false })
   if (error) { console.error('getBirds:', error.message, error.code); return [] }
   return data as Bird[]
@@ -24,10 +27,13 @@ export async function getBirds(): Promise<Bird[]> {
 
 export async function getBirdById(id: string): Promise<Bird | null> {
   const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return null
   const { data, error } = await supabase
     .from('birds')
     .select(BIRD_DETAIL_SELECT)
     .eq('id', id)
+    .eq('user_id', user.id)
     .single()
   if (error) { console.error('getBirdById:', error.message, error.code); return null }
   return data as Bird

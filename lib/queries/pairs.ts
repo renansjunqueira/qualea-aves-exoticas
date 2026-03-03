@@ -9,9 +9,12 @@ const PAIR_SELECT = `
 
 export async function getPairs(): Promise<Pair[]> {
   const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return []
   const { data, error } = await supabase
     .from('pairs')
     .select(PAIR_SELECT)
+    .eq('user_id', user.id)
     .eq('active', true)
     .order('created_at', { ascending: false })
   if (error) { console.error('getPairs:', error.message, error.code); return [] }
@@ -20,10 +23,13 @@ export async function getPairs(): Promise<Pair[]> {
 
 export async function getPairById(id: string): Promise<Pair | null> {
   const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return null
   const { data, error } = await supabase
     .from('pairs')
     .select(PAIR_SELECT)
     .eq('id', id)
+    .eq('user_id', user.id)
     .single()
   if (error) { console.error('getPairById:', error.message, error.code); return null }
   return data as Pair
