@@ -29,7 +29,7 @@ export function Sidebar({ userEmail, isAdmin }: Props) {
       {/* Logo */}
       <div className="flex items-center gap-3 px-4 py-4" style={{ background: 'var(--color-primary-900)' }}>
         <div className="relative w-14 h-14 flex-shrink-0">
-          <Image src="/logo-removebg-preview.png" alt="Qualea Tech" fill className="object-contain" />
+          <Image src="/logo.png" alt="Qualea Tech" fill className="object-contain" />
         </div>
         <span
           className="text-white font-semibold tracking-tight leading-none"
