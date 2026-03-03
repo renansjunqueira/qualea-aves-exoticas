@@ -1,5 +1,5 @@
 'use server'
-import { createAdminClient } from '@/lib/supabase/admin'
+import { createClient } from '@/lib/supabase/server'
 import type { BirdSex, BirdStatus } from '@/types'
 
 interface BirdPayload {
@@ -16,7 +16,10 @@ interface BirdPayload {
 }
 
 export async function saveBird(payload: BirdPayload, id?: string) {
-  const supabase = createAdminClient()
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Não autenticado')
+
   const data = {
     ring_number: payload.ring_number,
     species_id:  payload.species_id,

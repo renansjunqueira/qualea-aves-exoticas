@@ -1,5 +1,5 @@
 'use server'
-import { createAdminClient } from '@/lib/supabase/admin'
+import { createClient } from '@/lib/supabase/server'
 import type { ClutchStatus } from '@/types'
 
 interface ClutchPayload {
@@ -13,7 +13,10 @@ interface ClutchPayload {
 }
 
 export async function saveClutch(payload: ClutchPayload, id?: string) {
-  const supabase = createAdminClient()
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Não autenticado')
+
   const data = {
     pair_id:        payload.pair_id,
     first_egg_date: payload.first_egg_date || null,

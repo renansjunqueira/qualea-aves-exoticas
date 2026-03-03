@@ -4,8 +4,9 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import {
-  LayoutDashboard, Bird, Heart, Egg, BookOpen, Settings,
+  LayoutDashboard, Bird, Heart, Egg, BookOpen, Settings, LogOut,
 } from 'lucide-react'
+import { signOut } from '@/lib/actions/auth'
 
 const NAV = [
   { href: '/',          label: 'Dashboard',  icon: LayoutDashboard },
@@ -15,7 +16,11 @@ const NAV = [
   { href: '/species',   label: 'Espécies',   icon: BookOpen },
 ]
 
-export function Sidebar() {
+interface Props {
+  userEmail?: string
+}
+
+export function Sidebar({ userEmail }: Props) {
   const pathname = usePathname()
 
   return (
@@ -55,9 +60,25 @@ export function Sidebar() {
           <Settings size={17} strokeWidth={1.8} />
           Configurações
         </Link>
-        <p className="text-[10px] px-3 pt-3" style={{ color: 'var(--color-primary-500)' }}>
-          HELINHO · GUARÁ/SP
-        </p>
+
+        {/* Usuário + logout */}
+        <div className="mt-3 px-3">
+          {userEmail && (
+            <p className="text-[11px] truncate mb-2" style={{ color: 'var(--color-primary-400)' }}>
+              {userEmail}
+            </p>
+          )}
+          <form action={signOut}>
+            <button
+              type="submit"
+              className="flex items-center gap-2 text-[13px] font-medium transition-colors hover:text-white"
+              style={{ color: 'var(--color-primary-400)' }}
+            >
+              <LogOut size={14} />
+              Sair
+            </button>
+          </form>
+        </div>
       </div>
     </aside>
   )

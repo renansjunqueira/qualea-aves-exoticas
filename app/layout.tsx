@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { Sidebar }   from '@/components/layout/Sidebar'
 import { BottomNav } from '@/components/layout/BottomNav'
+import { createClient } from '@/lib/supabase/server'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
@@ -19,11 +20,14 @@ export const viewport: Viewport = {
   initialScale: 1,
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
   return (
     <html lang="pt-BR" className={inter.variable}>
       <body className="font-sans antialiased bg-surface min-h-screen" suppressHydrationWarning>
-        <Sidebar />
+        <Sidebar userEmail={user?.email} />
         {/* Conteúdo principal com offset da sidebar */}
         <div className="lg:pl-60 min-h-screen flex flex-col">
           {children}
