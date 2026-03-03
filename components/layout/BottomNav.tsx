@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils'
 import { LayoutDashboard, Bird, Heart, Egg, BookOpen } from 'lucide-react'
 
 const NAV = [
-  { href: '/',         label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/birds',    label: 'Plantel',   icon: Bird },
   { href: '/pairs',    label: 'Casais',    icon: Heart },
   { href: '/clutches', label: 'Ninhadas',  icon: Egg },
@@ -18,7 +18,7 @@ export function BottomNav() {
   return (
     <nav className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white border-t border-border flex items-center safe-area-inset-bottom">
       {NAV.map(({ href, label, icon: Icon }) => {
-        const active = pathname === href || (href !== '/' && pathname.startsWith(href))
+        const active = pathname === href || pathname.startsWith(href + '/')
         return (
           <Link key={href} href={href} className={cn('bottom-nav-item', active && 'active')}>
             <Icon size={22} strokeWidth={active ? 2.2 : 1.6} />

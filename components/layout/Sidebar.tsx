@@ -9,7 +9,7 @@ import {
 import { signOut } from '@/lib/actions/auth'
 
 const NAV = [
-  { href: '/',          label: 'Dashboard',  icon: LayoutDashboard },
+  { href: '/dashboard', label: 'Dashboard',  icon: LayoutDashboard },
   { href: '/birds',     label: 'Plantel',    icon: Bird },
   { href: '/pairs',     label: 'Casais',     icon: Heart },
   { href: '/clutches',  label: 'Ninhadas',   icon: Egg },
@@ -45,7 +45,7 @@ export function Sidebar({ userEmail, isAdmin }: Props) {
           Menu
         </p>
         {NAV.map(({ href, label, icon: Icon }) => {
-          const active = pathname === href || (href !== '/' && pathname.startsWith(href))
+          const active = pathname === href || pathname.startsWith(href + '/')
           return (
             <Link key={href} href={href} className={cn('nav-link', active && 'active')}>
               <Icon size={17} strokeWidth={active ? 2.2 : 1.8} />

@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 // Rotas acessíveis sem autenticação
-const PUBLIC_ROUTES = ['/login', '/signup', '/auth/callback']
+const PUBLIC_ROUTES = ['/', '/login', '/signup', '/auth/callback']
 // Rotas acessíveis para qualquer usuário autenticado (independente do status)
 const STATUS_ROUTES = ['/pending', '/suspended']
 
@@ -32,16 +32,16 @@ export async function middleware(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    if (PUBLIC_ROUTES.some(r => pathname.startsWith(r))) return response
+    if (PUBLIC_ROUTES.some(r => pathname === r || (r !== '/' && pathname.startsWith(r)))) return response
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  // Usuário autenticado tentando acessar rota pública → home
-  if (PUBLIC_ROUTES.some(r => pathname.startsWith(r))) {
-    return NextResponse.redirect(new URL('/', request.url))
+  // Usuário autenticado tentando acessar login/signup → dashboard
+  if (['/login', '/signup'].some(r => pathname.startsWith(r))) {
+    return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
-  // 2. Verificar status do perfil (RLS "read own" permite ao anon key)
+  // 2. Verificar status do perfil
   const { data: profile } = await supabase
     .from('profiles')
     .select('role, status')
@@ -53,7 +53,13 @@ export async function middleware(request: NextRequest) {
 
   // Em /pending ou /suspended — não bloquear, mas redirecionar se já está ativo
   if (STATUS_ROUTES.some(r => pathname.startsWith(r))) {
-    if (status === 'active') return NextResponse.redirect(new URL('/', request.url))
+    if (status === 'active') return NextResponse.redirect(new URL('/dashboard', request.url))
+    return response
+  }
+
+  // Landing page (/) — autenticado ativo vai ao dashboard
+  if (pathname === '/') {
+    if (status === 'active') return NextResponse.redirect(new URL('/dashboard', request.url))
     return response
   }
 
@@ -62,7 +68,7 @@ export async function middleware(request: NextRequest) {
 
   // 3. Rotas /admin → apenas admins
   if (pathname.startsWith('/admin') && role !== 'admin') {
-    return NextResponse.redirect(new URL('/', request.url))
+    return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
   return response
